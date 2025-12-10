@@ -1,44 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>
+  <h1 class="d-flex justify-content-between align-items-center">
     TODO list
     <a href="{% url "todo_app:task-create" %}" class="btn btn-primary link-to-page">
       Add task
     </a>
   </h1>
+  <br>
   <ul style="list-style: none;" class="page_list">
     {% for task in task_list %}
-      <h4>
-        {{ task }}
+      <h5 class="d-flex justify-content-between align-items-center">
+        <div>
+          {{ task }}
+          {% if task.is_completed %}
+            <span style="color: darkgreen">Done</span>
+          {% else %}
+            <span style="color: red">Not done</span>
+          {% endif %}
+        </div>
         {% if task.is_completed %}
-          <span style="color: darkgreen">Done</span>
-          <a href="{% url "todo_app:task-complete-incomplete" %}" class="btn btn-secondary link-to-page">
+          <a href="{% url "todo_app:task-complete-incomplete" task.pk %}" class="btn btn-secondary link-to-page">
             Undo
           </a>
         {% else %}
-          <span style="color: red">Not Done</span>
-          <a href="{% url "todo_app:task-complete-incomplete" %}" class="btn btn-success link-to-page">
+          <a href="{% url "todo_app:task-complete-incomplete" task.pk %}" class="btn btn-success link-to-page">
             Complete
           </a>
-      </h4>
-      <br>
-      <p>Created: {{ task.created_at }}.</p>
-      <p style="color: grey; font-size: 15px">
+        {% endif %}
+      </h5>
+      <p>Created: {{ task.created_at }} {% if task.deadline %}<span style="color: maroon">Deadline: {{ task.deadline }}</span>{% endif %}</p>
+      <p style="color: grey; font-size: 17px">
         Tags:
           {% for tag in task.tags.all %}
             <span>{{ tag }}</span>
           {% empty %}
             <span>No tags.</span>
           {% endfor %}
-        <a href="{% url "todo_app:task-update" task.pk %}">Update</a>
-        <a href="{% url "todo_app:task-delete" task.pk %}">Delete</a>
+        <a href="{% url "todo_app:task-update" task.pk %}" style="font-weight: bold">Update</a>
+        <a href="{% url "todo_app:task-delete" task.pk %}" style="font-weight: bold">Delete</a>
       </p>
-      <p><strong>Content:</strong> {{ post.content }}</p>
-      <p><strong>Number of comments:</strong> {{ post.comments.count }}</p>
+      <hr>
       <br>
     {% empty %}
-      <p>No tasks.</p>
+      <p>There are no tasks.</p>
     {% endfor %}
   </ul>
 {% endblock %}
