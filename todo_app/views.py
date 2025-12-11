@@ -1,4 +1,5 @@
 from django.http import HttpRequest, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -29,14 +30,12 @@ class TaskDeleteView(generic.DeleteView):
     success_url = reverse_lazy("todo_app:task-list")
 
 
-def complete_and_incomplete_task(request: HttpRequest, pk: int) -> HttpResponseRedirect:
-    task = Task.objects.get(pk=pk)
-    if task.is_completed:
-        task.is_completed = False
-    else:
-        task.is_completed = True
-    task.save()
-    return HttpResponseRedirect(reverse_lazy("todo_app:task-list"))
+class ToggleTaskStatusView(generic.View):
+    def post(self, request: HttpRequest, pk: int) -> HttpResponseRedirect:
+        task = Task.objects.get(pk=pk)
+        task.is_completed = not task.is_completed
+        task.save()
+        return redirect(reverse_lazy("todo_app:task-list"))
 
 
 class TagListView(generic.ListView):
