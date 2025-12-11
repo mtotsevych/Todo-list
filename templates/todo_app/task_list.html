@@ -20,13 +20,15 @@
           {% endif %}
         </div>
         {% if task.is_completed %}
-          <a href="{% url "todo_app:task-complete-incomplete" task.pk %}" class="btn btn-secondary link-to-page">
-            Undo
-          </a>
+          <form action="{% url "todo_app:task-toggle" task.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Undo" class="btn btn-secondary link-to-page">
+          </form>
         {% else %}
-          <a href="{% url "todo_app:task-complete-incomplete" task.pk %}" class="btn btn-success link-to-page">
-            Complete
-          </a>
+          <form action="{% url "todo_app:task-toggle" task.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Complete" class="btn btn-success link-to-page">
+          </form>
         {% endif %}
       </h5>
       <p>Created: {{ task.created_at }} {% if task.deadline %}<span style="color: maroon">Deadline: {{ task.deadline }}</span>{% endif %}</p>
